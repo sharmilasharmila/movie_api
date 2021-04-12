@@ -100,6 +100,11 @@ app.get('/movies',(req,res)=>{
     res.json(movies);
 })
 
+//GET DOCUMENTATION
+app.get('/documentation',(req,res)=>{
+    res.sendFile('C:/Users/Sajith/Documents/GitHub/sharmila/second_acheivement/movie_api/movie_api/public/documentation.html');
+});
+
 //Error Handler
 app.use((err,req,res,next) =>{
     console.error(err.stack);
