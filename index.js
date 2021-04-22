@@ -2,11 +2,14 @@ const express = require("express"),
     morgan = require("morgan"),
     mongoose = require("mongoose"),
     Models = require('./model.js'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    passport = require('passport');
 
 
 const app = express();
 app.use(bodyParser.json());
+let auth = require('./auth')(app);
+require ('./passport');
 app.use(morgan('common'));
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -21,13 +24,15 @@ app.get('/',(req,res)=>{
 });
 
 //GET MOVIES
-app.get('/movies',(req,res)=>{
-    res.json(movies);
-})
-
-//GET DOCUMENTATION
-app.get('/documentation',(req,res)=>{
-    res.sendFile('C:/Users/Sajith/Documents/GitHub/sharmila/second_acheivement/movie_api/movie_api/public/documentation.html');
+app.get('/movies',passport.authenticate('jwt', {session:false}) ,(req,res)=>{
+  Movies.find()
+  .then(movies => {
+    res.status(201).json(movies);
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).send('Error: ' + error);
+  });
 });
 
 //Add a user
