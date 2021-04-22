@@ -1,94 +1,19 @@
 const express = require("express"),
-    morgan = require("morgan");
+    morgan = require("morgan"),
+    mongoose = require("mongoose"),
+    Models = require('./model.js'),
+    bodyParser = require('body-parser');
+
+
 const app = express();
+app.use(bodyParser.json());
 app.use(morgan('common'));
+const Movies = Models.Movie;
+const Users = Models.User;
 
-/* let topBooks = [
-    {
-        title:'Harry Potter',
-        author: 'J.K.Rowling'
-    },
-    {
-        title:'Lord of the Rings',
-        author:'J.R.R.Tolkins'
-    },
-    {
-        title:'Twilight',
-        author:'Stephanie Meyer'
-    }
-]; */
+mongoose.connect('mongodb://localhost:27017/myFlixDB', {useNewUrlParser: true,
+useUnifiedTopology: true});
 
-// Movie Details
-let movies = [
-    {
-        title: 'The Lion King',
-        Director: 'Jonathan Favreau'
-    },
-    {
-        title:'Master',
-        Director: 'Lokesh Kanagaraj'
-    },
-    {
-        title: 'Karnan',
-        Director: 'Mari Selvaraj'
-    },
-    {
-        title:'Endhiran',
-        Director:'Shankar'
-    },
-    {
-        title: 'Pariyerum Perumal',
-        Director: 'Mari Selvaraj'
-    },
-    {
-        title: 'Vikram',
-        Director: 'Lokesh Kanagaraj'
-    },
-    {
-        title: 'Doctor',
-        Director: 'Nelson'
-    },
-    {
-        title: 'Kaithi',
-        Director: 'Lokesh Kanagaraj'
-    },
-    {
-        title: 'The Irishman',
-        Director: 'Martin Scorcees'
-    },
-    {
-        title: 'Titanic',
-        Director: 'Spilberg'
-    }
-]
-
-//Installation of Morgan void necessity of the myLogger
-/* let myLogger = (req, res, next) =>{
-    console.log(req.url);
-    next();
-};
-app.use(myLogger); */
-
-/* let requestTime = (req, res, next) =>{
-    req.requestTime = Date.now();
-    next();
-};
-app.use(requestTime); */
-
-
-//Get request
-//Following are for practice
-/* app.get('/',(req,res)=>{
-    res.send('Welcome To My Book Club \n\n <small> Requested in: ' + req.requestTime + '<small>');
-});
-
-app.get('/documentation',(req,res)=>{
-    res.sendFile('./public/documentation.html');
-});
-
-app.get('/books',(req,res)=>{
-    res.json(topBooks);
-}); */
 
 //Default
 app.get('/',(req,res)=>{
@@ -103,6 +28,128 @@ app.get('/movies',(req,res)=>{
 //GET DOCUMENTATION
 app.get('/documentation',(req,res)=>{
     res.sendFile('C:/Users/Sajith/Documents/GitHub/sharmila/second_acheivement/movie_api/movie_api/public/documentation.html');
+});
+
+//Add a user
+/* We’ll expect JSON in this format
+{
+  ID: Integer,
+  Username: String,
+  Password: String,
+  Email: String,
+  Birthday: Date
+}*/
+app.post('/users', (req, res) => {
+    Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(400).send(req.body.Username + 'already exists');
+        } else {
+          Users
+            .create({
+              Username: req.body.Username,
+              Password: req.body.Password,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            })
+            .then((user) =>{res.status(201).json(user) })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          })
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  });
+
+//Get User Details as whole
+app.get('/users', (req,res)=>{
+    Users.find()
+    .then((users) => {
+        res.status(201).json(users);
+    })
+    .catch((err) =>{
+         console.error(err);
+         res.status(500).send('Error : ' + err);
+    });
+});
+
+//Get Single User Details 
+app.get('/users/:Username', (req,res)=>{
+    Users.findOne({Username : req.params.Username})
+    .then((users) => {
+        res.json(user);
+    })
+    .catch((err) =>{
+         console.error(err);
+         res.status(500).send('Error : ' + err);
+    });
+});
+
+// Update a user's info, by username
+/* We’ll expect JSON in this format
+{
+  Username: String,
+  (required)
+  Password: String,
+  (required)
+  Email: String,
+  (required)
+  Birthday: Date
+}*/
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/Movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+// Delete a user by username
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 //Error Handler
