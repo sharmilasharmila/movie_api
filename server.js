@@ -1,7 +1,7 @@
-const http = require('http'),
+const http = require('http'), //HTTP module
 fs = require('fs'),
-url = require('url');
-const { request } = require('node:http');
+url = require('url'); //URL module
+// const { request } = require('node:http');
 
 //http only
 /* http.createServer((request, response)=>{
@@ -34,10 +34,16 @@ http.createServer((request, response)=>{
         filepath = 'index.html';
     }
 
+    fs.readFile(filepath, (err, data)=>{
+      if(err){
+        throw err;
+      }
+
+
     response.writeHead(200, {'Content-type': 'text/html'});
     response.write(data);
     response.end();
-    
+});
 
 }).listen(8080);
 console.log('My Node server is listening to PORT 8080...');
