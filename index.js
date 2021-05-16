@@ -14,13 +14,13 @@ let auth = require('./auth')(app);
 require ('./passport');
 app.use(morgan('common'));
 
-let allowedOrigins = ['http://localhost:8080'];
+let allowedOrigins = '*';
 app.use(cors({
   origin: (origin, callback)=>{
     if(!origin) return callback (null, true);
     if(allowedOrigins.indexOf(origin) === -1){
       let message = 'The CORS policy for this application does not allow access from the origin ' + origin;
-      return callback(new Error(message), false); 
+      return callback(new Error(message), false);
     }
     return callback(null, true);
   }
@@ -37,7 +37,7 @@ app.get('/',(req,res)=>{
 });
 
 //GET MOVIES
-app.get('/movies',passport.authenticate('jwt', {session:false}) ,(req,res)=>{
+app.get('/movies' ,(req,res)=>{
   Movies.find()
   .then(movies => {
     res.status(201).json(movies);
@@ -111,7 +111,7 @@ app.get('/users', (req,res)=>{
     });
 });
 
-//Get Single User Details 
+//Get Single User Details
 app.get('/users/:Username', (req,res)=>{
     Users.findOne({Username : req.params.Username})
     .then((users) => {
