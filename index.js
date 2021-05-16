@@ -232,10 +232,10 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 });
 
 //Error Handler
-app.use((err,req,res,next) =>{
-    console.error(err.stack);
-    res.status(500).send('The code is broken')
-});
+// app.use((err,req,res,next) =>{
+//     console.error(err.stack);
+//     res.status(500).send('The code is broken')
+// });
 
 //Listen to requests
 const port = process.env.PORT || 8080;
