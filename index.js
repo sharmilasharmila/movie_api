@@ -14,7 +14,7 @@ let auth = require('./auth')(app);
 require ('./passport');
 app.use(morgan('common'));
 
-let allowedOrigins = '*';
+let allowedOrigins = let allowedOrigins = ['http://localhost:4565', 'http://testsite.com'];
 app.use(cors({
   origin: (origin, callback)=>{
     if(!origin) return callback (null, true);
