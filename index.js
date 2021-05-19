@@ -239,11 +239,7 @@ app.use((err,req,res,next) =>{
 });
 
 //Listen to requests
-// const port = process.env.PORT || 8080;
-// app.listen(port, '0.0.0.0', () =>{
-//   console.log('listening on PORT: ' + port);
-// });
-
-app.listen(process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () =>{
+  console.log('listening on PORT: ' + port);
 });
