@@ -14,7 +14,7 @@ let auth = require('./auth')(app);
 require ('./passport');
 app.use(morgan('common'));
 
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','https://sharmilamovie.herokuapp.com/',
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','https://sharmilamovie.herokuapp.com',
 'http://localhost:1234','http://localhost:7057'];
 //let allowedOrigins = '*';
 app.use(cors({
