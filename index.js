@@ -14,7 +14,7 @@ let auth = require('./auth')(app);
 require ('./passport');
 app.use(morgan('common'));
 
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://sharmilamovie.herokuapp.com', 'http://localhost:1234', 'http://localhost:4851','http://localhost:4200'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://sharmilamovie.herokuapp.com', 'http://localhost:1234', 'http://localhost:4851','http://localhost:4200', 'https://sharmilaflix.netlify.app/'];
 //let allowedOrigins = '*';
 app.use(cors({
   origin: (origin, callback)=>{
