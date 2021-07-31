@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 let auth = require('./auth')(app);
 require ('./passport');
 app.use(morgan('common'));
+app.use(cors());
 
 //let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://sharmilamovie.herokuapp.com', 'http://localhost:1234', 'http://localhost:4384','http://localhost:4200', 'https://sharmilaflix.netlify.app/'];
 // let allowedOrigins = "*";
