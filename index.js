@@ -15,17 +15,17 @@ require ('./passport');
 app.use(morgan('common'));
 
 //let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://sharmilamovie.herokuapp.com', 'http://localhost:1234', 'http://localhost:4384','http://localhost:4200', 'https://sharmilaflix.netlify.app/'];
-let allowedOrigins = "*";
-app.use(cors({
-  origin: (origin, callback)=>{
-    if(!origin) return callback (null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
-      let message = 'The CORS policy for this application does not allow access from the origin ' + origin;
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  }
-}));
+// let allowedOrigins = "*";
+// app.use(cors({
+//   origin: (origin, callback)=>{
+//     if(!origin) return callback (null, true);
+//     if(allowedOrigins.indexOf(origin) === -1){
+//       let message = 'The CORS policy for this application does not allow access from the origin ' + origin;
+//       return callback(new Error(message), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 const Movies = Models.Movie;
 const Users = Models.User;
 
